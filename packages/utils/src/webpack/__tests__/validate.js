@@ -47,7 +47,7 @@ describe('Webpack/validate', () => {
   test('should return message if data is missing', () => {
     expect(validate()).toMatch(/assets,modules,chunks/);
     expect(validate({})).toMatch(/name,size/);
-    expect(validate({ assets: [] })).toMatch(/notEmptyArray/);
+    expect(validate({ assets: [] })).toMatch(/NotEmptyArray/);
     expect(validate({ assets: [{}] })).toMatch(/name,size/);
     expect(validate({ assets: [{ size: 100 }] })).toMatch(/name,size/);
     expect(

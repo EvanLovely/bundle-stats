@@ -1,34 +1,40 @@
-import { superstruct } from 'superstruct';
+import {
+  array,
+  boolean,
+  intersection,
+  number,
+  object,
+  optional,
+  string,
+  struct,
+  union,
+} from 'superstruct';
 
-const struct = superstruct({
-  types: {
-    notEmptyArray: (value) => value?.length > 0,
-  },
+const NotEmptyArray = struct('NotEmptyArray', (value) => Array.isArray(value) && value?.length > 0);
+
+export const WebpackSourceAssetStruct = object({
+  name: string(),
+  size: number(),
 });
 
-export const WebpackSourceAssetStruct = struct.interface({
-  name: 'string',
-  size: 'number',
+export const WebpackSourceModuleChunk = object({
+  name: string(),
+  size: number(),
+  chunks: array(union([number(), string()])),
 });
 
-export const WebpackSourceModuleChunk = struct.interface({
-  name: 'string',
-  size: 'number',
-  chunks: [struct.union(['number', 'string'])],
+export const WebpackSourceChunkStruct = object({
+  id: union([number(), string()]),
+  entry: boolean(),
+  initial: boolean(),
+  names: array(string()),
+  files: array(string()),
 });
 
-export const WebpackSourceChunkStruct = struct.interface({
-  id: struct.union(['number', 'string']),
-  entry: 'boolean',
-  initial: 'boolean',
-  names: ['string'],
-  files: ['string'],
-});
-
-export const WebpackSourceStruct = struct.interface({
-  hash: struct.optional('string'),
-  builtAt: struct.optional('number'),
-  assets: struct.intersection([[WebpackSourceAssetStruct], 'notEmptyArray']),
-  modules: struct.optional([WebpackSourceModuleChunk]),
-  chunks: struct.optional([WebpackSourceChunkStruct]),
+export const WebpackSourceStruct = object({
+  hash: optional(string()),
+  builtAt: optional(number()),
+  assets: intersection([array(WebpackSourceAssetStruct), NotEmptyArray]),
+  modules: optional(array(WebpackSourceModuleChunk)),
+  chunks: optional(array(WebpackSourceChunkStruct)),
 });

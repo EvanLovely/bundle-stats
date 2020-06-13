@@ -1,3 +1,5 @@
+import { assert } from 'superstruct';
+
 import { INVALID } from '../../locales.json';
 import { WebpackSourceStruct } from './struct';
 
@@ -9,7 +11,7 @@ import { WebpackSourceStruct } from './struct';
  */
 export const validate = (webpackSource) => {
   try {
-    WebpackSourceStruct(webpackSource);
+    assert(webpackSource, WebpackSourceStruct);
   } catch (err) {
     const { path, type } = err;
     const key = path[0];
